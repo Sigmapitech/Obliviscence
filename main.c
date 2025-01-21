@@ -31,12 +31,11 @@ void *dispath_fork(pid_t pid, bool *in_fork, size_t request_size)
         *in_fork = true;
         return NULL;
     }
-    wait(&status);
+    waitpid(pid, &status, 0); // WNOHANG);
     status %= 255;
     fprintf(stderr, "child existed with status: %d\n", status);
     if (status == MAGIC_BAD_STATUS) {
         fprintf(stderr, "WAS NOT PROPERLY CHEKCED\n");
-        exit(EXIT_FAILURE);
     }
     fprintf(stderr, "returning real malloc...\n");
     return real(request_size);
